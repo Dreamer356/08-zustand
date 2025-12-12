@@ -1,42 +1,44 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import QueryProvider from "../components/Providers/QueryProvider";
-import Header from "../components/Header/Header";
-import Footer from "../components/Footer/Footer";
+import type { Metadata } from 'next';
+import { Roboto } from 'next/font/google';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import './globals.css';
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+import QueryProvider from '../components/Providers/QueryProvider';
+import Header from '../components/Header/Header';
+import Footer from '../components/Footer/Footer';
+
+const roboto = Roboto({
+  weight: ['400', '500', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-roboto',
 });
 
 export const metadata: Metadata = {
-  title: "NoteHub - Управління нотатками",
-  description: "Сучасний додаток для створення та управління вашими нотатками з категоріями та пошуком",
-  keywords: ["нотатки", "замітки", "організація", "продуктивність"],
-  authors: [{ name: "NoteHub Team" }],
-};
-
-export const viewport = {
-  width: "device-width",
-  initialScale: 1,
+  title: 'NoteHub',
+  description: 'NoteHub is a simple and convenient app for managing your notes',
+  openGraph: {
+    title: 'NoteHub',
+    description: 'NoteHub is a simple and convenient app for managing your notes',
+    url: 'https://notehub.vercel.app',
+    images: [
+      {
+        url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
   children,
   modal,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-  modal: React.ReactNode;
-}>) {
+  modal?: React.ReactNode;
+}) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+    <html lang="en">
+      <body className={roboto.variable}>
         <QueryProvider>
           <Header />
           {children}
