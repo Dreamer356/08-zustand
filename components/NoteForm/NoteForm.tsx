@@ -42,11 +42,7 @@ export default function NoteForm() {
   };
 
   return (
-    <form
-      className={css.form}
-      action={handleSubmit}
-      onChange={handleChange}
-    >
+    <form className={css.form} action={handleSubmit}>
       <div className={css.formGroup}>
         <label htmlFor="title">Title</label>
         <input
@@ -55,6 +51,7 @@ export default function NoteForm() {
           type="text"
           className={css.input}
           value={values.title}
+          onChange={handleChange}
           required
         />
       </div>
@@ -67,6 +64,7 @@ export default function NoteForm() {
           rows={8}
           className={css.textarea}
           value={values.content}
+          onChange={handleChange}
         />
       </div>
 
@@ -77,6 +75,7 @@ export default function NoteForm() {
           name="tag"
           className={css.select}
           value={values.tag}
+          onChange={handleChange}
           required
         >
           <option value="Todo">Todo</option>
@@ -96,10 +95,7 @@ export default function NoteForm() {
           Cancel
         </button>
 
-        <button
-          type="submit"
-          className={css.submitButton}
-        >
+        <button type="submit" className={css.submitButton}>
           Create note
         </button>
       </div>
