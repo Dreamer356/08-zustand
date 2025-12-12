@@ -1,6 +1,45 @@
+import type { Metadata } from 'next';
 import { QueryClient, dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { fetchNotesServer } from "../../../../lib/api";
 import NotesClient from "./Notes.client";
+
+/* =======================
+   SEO — generateMetadata
+   ======================= */
+
+interface MetadataProps {
+  params: {
+    slug?: string[];
+  };
+}
+
+export async function generateMetadata(
+  { params }: MetadataProps
+): Promise<Metadata> {
+  const filter = params.slug?.[0] ?? 'All';
+
+  const title = `Notes filter: ${filter} | NoteHub`;
+  const description = `Viewing notes filtered by ${filter} in NoteHub`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://notehub.vercel.app/notes/filter/${filter}`,
+      images: [
+        {
+          url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
+        },
+      ],
+    },
+  };
+}
+
+/* =======================
+   Page (SSR + Hydration)
+   ======================= */
 
 interface NotesPageProps {
   params: Promise<{
@@ -12,7 +51,10 @@ interface NotesPageProps {
   }>;
 }
 
-export default async function NotesPage({ params, searchParams }: NotesPageProps) {
+export default async function NotesPage({
+  params,
+  searchParams,
+}: NotesPageProps) {
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
 
@@ -20,12 +62,10 @@ export default async function NotesPage({ params, searchParams }: NotesPageProps
   const page = parseInt(resolvedSearchParams.page || "1");
   const search = resolvedSearchParams.search || "";
 
-  // Створюємо QueryClient для SSR
   const queryClient = new QueryClient();
 
   const queryKey = ["notes", { page, search, tag }];
 
-  // Prefetch для серверних даних (вимога ДЗ)
   await queryClient.prefetchQuery({
     queryKey,
     queryFn: () =>
