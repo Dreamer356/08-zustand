@@ -1,17 +1,18 @@
-
+// lib/store/noteStore.ts
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export type DraftNote = {
   title: string;
   content: string;
-  tag: string; 
+  tag: string;
+};
 
-export const initialDraft: DraftNote = {
+export const initialDraft = {
   title: '',
   content: '',
   tag: 'Todo',
-};
+} satisfies DraftNote;
 
 type NoteStoreState = {
   draft: DraftNote;
