@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
-import css from '../LayoutNotes.module.css';
+import TagsMenu from '@/components/TagsMenu/TagsMenu';
+import css from './LayoutNotes.module.css';
 
 export default function NotesLayout({
   children,
@@ -8,6 +9,12 @@ export default function NotesLayout({
 }) {
   return (
     <div className={css.layout}>
+      {/* Левая колонка — теги */}
+      <aside className={css.sidebar}>
+        <TagsMenu />
+      </aside>
+
+      {/* Основной контент */}
       <main className={css.main}>
         {children}
       </main>
