@@ -1,22 +1,23 @@
 import type { Metadata } from 'next';
-import { QueryClient, dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { fetchNotesServer } from "../../../../lib/api";
-import NotesClient from "./Notes.client";
+import { QueryClient, dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { fetchNotesServer } from '../../../../lib/api';
+import NotesClient from './Notes.client';
 
 /* =======================
    SEO — generateMetadata
    ======================= */
 
-interface MetadataProps {
-  params: {
-    slug?: string[];
-  };
+interface GenerateMetadataProps {
+  params: Promise<{
+    slug: string[];
+  }>;
 }
 
 export async function generateMetadata(
-  { params }: MetadataProps
+  { params }: GenerateMetadataProps
 ): Promise<Metadata> {
-  const filter = params.slug?.[0] ?? 'All';
+  const resolvedParams = await params;
+  const filter = resolvedParams.slug?.[0] ?? 'All';
 
   const title = `Notes filter: ${filter} | NoteHub`;
   const description = `Viewing notes filtered by ${filter} in NoteHub`;
@@ -58,13 +59,13 @@ export default async function NotesPage({
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
 
-  const tag = resolvedParams.slug?.[0] || "All";
-  const page = parseInt(resolvedSearchParams.page || "1");
-  const search = resolvedSearchParams.search || "";
+  const tag = resolvedParams.slug?.[0] || 'All';
+  const page = Number(resolvedSearchParams.page ?? 1);
+  const search = resolvedSearchParams.search ?? '';
 
   const queryClient = new QueryClient();
 
-  const queryKey = ["notes", { page, search, tag }];
+  const queryKey = ['notes', { page, search, tag }];
 
   await queryClient.prefetchQuery({
     queryKey,
@@ -73,7 +74,7 @@ export default async function NotesPage({
         page,
         12,
         search,
-        tag === "All" ? undefined : tag
+        tag === 'All' ? undefined : tag
       ),
   });
 
