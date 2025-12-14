@@ -1,23 +1,24 @@
 import type { Metadata } from 'next';
-import { HydrationBoundary, QueryClient, dehydrate } from "@tanstack/react-query";
-import { fetchNoteById } from "../../../lib/api";
-import NotePreview from "../../@modal/(.)notes/[id]/NotePreview.client";
+import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query';
+import { fetchNoteById } from '../../../lib/api';
+import NotePreview from '../../@modal/(.)notes/[id]/NotePreview.client';
 
 /* =======================
    SEO — generateMetadata
    ======================= */
 
-interface MetadataProps {
-  params: {
+interface GenerateMetadataProps {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata(
-  { params }: MetadataProps
+  { params }: GenerateMetadataProps
 ): Promise<Metadata> {
   try {
-    const note = await fetchNoteById(params.id);
+    const resolvedParams = await params;
+    const note = await fetchNoteById(resolvedParams.id);
 
     const title = `${note.title} | NoteHub`;
     const description =
@@ -31,7 +32,7 @@ export async function generateMetadata(
       openGraph: {
         title,
         description,
-        url: `https://notehub.vercel.app/notes/${params.id}`,
+        url: `https://notehub.vercel.app/notes/${resolvedParams.id}`,
         images: [
           {
             url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
@@ -62,7 +63,7 @@ export default async function NotePage({ params }: NotePageProps) {
   const resolvedParams = await params;
 
   await queryClient.prefetchQuery({
-    queryKey: ["note", resolvedParams.id],
+    queryKey: ['note', resolvedParams.id],
     queryFn: () => fetchNoteById(resolvedParams.id),
   });
 
